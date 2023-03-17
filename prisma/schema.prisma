@@ -11,7 +11,42 @@ datasource db {
 }
 
 // User
-
-// ForumPost
+model User {
+  id        String @id @default(cuid())
+  firstname String
+  lastname  String
+  email     String @unique
+  avatar    String
+  entries   ForumPost[]
+  comments  PostComment[]
+}
 
 // ForumCategory
+model ForumCategory{
+  id          Int @id @default(autoincrement())
+  title       String
+  description String
+  posts       ForumPost[]
+}
+
+// ForumPost
+model ForumPost{
+  id          Int @id @default(autoincrement())
+  content     String
+  authorid    String
+  author      User @relation(fields: [authorid], references: [id])
+  category    ForumCategory @relation(fields: [categoryid], references: [id])
+  categoryid  Int
+  createdate  DateTime
+  comments    PostComment[]
+}
+
+// PostComment
+model PostComment{
+  id        Int @id @default(autoincrement())
+  content   String
+  authorid  String
+  author    User @relation(fields: [authorid], references: [id])
+  post      ForumPost @relation(fields: [postid], references: [id])
+  postid    Int
+}
